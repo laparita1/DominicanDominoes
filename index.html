@@ -11,7 +11,6 @@
       text-align:center;
     }
 
-    /* Realistic wood texture */
     #table {
       width:90%;
       height:400px;
@@ -31,7 +30,6 @@
       box-shadow:0 8px 20px rgba(0,0,0,0.7);
     }
 
-    /* REALISTIC DOMINO TILE */
     .domino {
       width:95px;
       height:48px;
@@ -44,14 +42,10 @@
       align-items:center;
       padding:6px;
       box-sizing:border-box;
-
-      /* Realistic 3D bevel + shine + softer shadow */
       box-shadow:
         0px 4px 10px rgba(0,0,0,0.55),
         inset 0px 2px 3px rgba(255,255,255,0.85),
         inset 0px -2px 3px rgba(0,0,0,0.25);
-
-      /* initial "air" state before landing */
       transform:scale(0.8) rotate(-18deg) translateY(-35px);
       opacity:0;
       transition:
@@ -59,7 +53,6 @@
         opacity 0.25s ease-out;
     }
 
-    /* landed state with slight physics bounce */
     .domino.played {
       transform:scale(1) rotate(var(--final-rot, 0deg)) translateY(0);
       opacity:1;
@@ -108,6 +101,7 @@
     #scoreboard { margin-top:20px; }
   </style>
 </head>
+
 <body>
   <h1>Dominican Dominoes – Realistic Edition</h1>
   <p>Los Panas (P1 & P3) vs Los Vecinos (P2 & P4)</p>
@@ -130,7 +124,6 @@
     <p>Los Vecinos: <span id="scoreB">0</span> points</p>
   </div>
 
-  <!-- More realistic domino hit sound -->
   <audio id="clickSound">
     <source src="https://actions.google.com/sounds/v1/foley/wood_plank_flicks.ogg" type="audio/ogg">
   </audio>
@@ -203,49 +196,16 @@ function findStarter() {
   return starter;
 }
 
-/* Realistic spacing based on your photo */
 function pipPositions(num) {
   const positions = {
     0: [],
-
     1: [[50, 42]],
-
-    2: [
-      [32, 30],
-      [68, 70]
-    ],
-
-    3: [
-      [32, 30],
-      [50, 42],
-      [68, 70]
-    ],
-
-    4: [
-      [32, 30],
-      [32, 70],
-      [68, 30],
-      [68, 70]
-    ],
-
-    5: [
-      [32, 30],
-      [32, 70],
-      [68, 30],
-      [68, 70],
-      [50, 42]
-    ],
-
-    6: [
-      [32, 28],
-      [32, 50],
-      [32, 72],
-      [68, 28],
-      [68, 50],
-      [68, 72]
-    ]
+    2: [[32, 30],[68, 70]],
+    3: [[32, 30],[50, 42],[68, 70]],
+    4: [[32, 30],[32, 70],[68, 30],[68, 70]],
+    5: [[32, 30],[32, 70],[68, 30],[68, 70],[50, 42]],
+    6: [[32, 28],[32, 50],[32, 72],[68, 28],[68, 50],[68, 72]]
   };
-
   return positions[num];
 }
 
@@ -291,22 +251,19 @@ function renderChain() {
   });
 }
 
-/* UPDATED: Hide other players' tiles */
 function renderHand() {
   const handDiv = document.getElementById("hand");
 
-  // ALWAYS CLEAR FIRST
+  // FIX: Always clear first
   handDiv.innerHTML = "";
 
   if (gameOver) return;
 
-  // If it's NOT Player 1's turn → show nothing
   if (currentPlayer !== 0) {
     handDiv.textContent = "Waiting for other players...";
     return;
   }
 
-  // Player 1 turn → show only Player 1 tiles
   handDiv.innerHTML = "<h3>Your Tiles</h3>";
 
   hands[0].forEach((tile, idx) => {
