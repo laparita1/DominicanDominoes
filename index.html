@@ -295,17 +295,20 @@ function renderChain() {
 function renderHand() {
   const handDiv = document.getElementById("hand");
 
-  if (gameOver) {
-    handDiv.innerHTML = "";
-    return;
-  }
+  // ALWAYS CLEAR FIRST
+  handDiv.innerHTML = "";
 
+  if (gameOver) return;
+
+  // If it's NOT Player 1's turn → show nothing
   if (currentPlayer !== 0) {
-    handDiv.innerHTML = "<p>Waiting for other players...</p>";
+    handDiv.textContent = "Waiting for other players...";
     return;
   }
 
+  // Player 1 turn → show only Player 1 tiles
   handDiv.innerHTML = "<h3>Your Tiles</h3>";
+
   hands[0].forEach((tile, idx) => {
     const span = document.createElement("span");
     span.className = "hand-tile";
