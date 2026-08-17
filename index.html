@@ -7,12 +7,12 @@
     body { background:#222; color:#fff; font-family:Arial; text-align:center; }
     #table { width:90%; height:400px; margin:20px auto; border:3px solid #fff; position:relative; overflow:hidden; }
     .domino {
-      width:60px; height:30px; background:#fff; color:#000;
-      border:2px solid #000; border-radius:4px;
+      width:80px; height:40px; background:#fff; color:#000;
+      border:3px solid #000; border-radius:6px;
       position:absolute; display:flex; justify-content:space-between;
-      align-items:center; padding:2px; box-sizing:border-box;
+      align-items:center; padding:4px; box-sizing:border-box;
       transform: scale(0.8);
-      transition: transform 0.2s ease-out;
+      transition: transform 0.25s ease-out;
     }
     .domino.played {
       transform: scale(1);
@@ -20,16 +20,11 @@
     .half {
       width:50%; height:100%; display:flex;
       justify-content:center; align-items:center;
-    }
-    .pips {
-      display:grid;
-      grid-template-columns: repeat(3, 6px);
-      grid-template-rows: repeat(3, 6px);
-      gap:2px;
+      position:relative;
     }
     .pip {
-      width:6px; height:6px; border-radius:50%;
-      background:#000;
+      width:7px; height:7px; background:#000;
+      border-radius:50%; position:absolute;
     }
     #hand { margin-top:20px; }
     .hand-tile {
@@ -63,7 +58,7 @@
     <p>Los Vecinos: <span id="scoreB">0</span> points</p>
   </div>
 
-  <!-- Simple sounds -->
+  <!-- Sounds -->
   <audio id="clickSound">
     <source src="https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg" type="audio/ogg">
   </audio>
@@ -136,26 +131,31 @@ function findStarter() {
   return starter;
 }
 
-function createPips(num) {
-  const pipsDiv = document.createElement("div");
-  pipsDiv.className = "pips";
-  const pattern = [
-    [0,0,0],
-    [0,0,1],
-    [1,0,1],
-    [1,0,1,1],
-    [1,0,1,1,1],
-    [1,1,1,1,1,1],
-    [1,1,1,1,1,1,1]
-  ];
-  const layout = pattern[num] || [];
-  for (let i = 0; i < 9; i++) {
+function pipPositions(num) {
+  const positions = {
+    0: [],
+    1: [[50,20]],
+    2: [[30,10],[70,30]],
+    3: [[30,10],[50,20],[70,30]],
+    4: [[30,10],[30,30],[70,10],[70,30]],
+    5: [[30,10],[30,30],[70,10],[70,30],[50,20]],
+    6: [[30,10],[30,20],[30,30],[70,10],[70,20],[70,30]]
+  };
+  return positions[num];
+}
+
+function createHalf(num) {
+  const half = document.createElement("div");
+  half.className = "half";
+  const pos = pipPositions(num);
+  pos.forEach(([x,y]) => {
     const pip = document.createElement("div");
     pip.className = "pip";
-    pip.style.visibility = layout[i] ? "visible" : "hidden";
-    pipsDiv.appendChild(pip);
-  }
-  return pipsDiv;
+    pip.style.left = x + "%";
+    pip.style.top = y + "%";
+    half.appendChild(pip);
+  });
+  return half;
 }
 
 function renderChain() {
@@ -163,7 +163,7 @@ function renderChain() {
   table.innerHTML = "";
   let x = table.clientWidth / 2;
   let y = table.clientHeight / 2;
-  let offset = 65;
+  let offset = 90;
 
   chain.forEach((tile, idx) => {
     const div = document.createElement("div");
@@ -171,16 +171,9 @@ function renderChain() {
     div.style.left = (x + (idx - chain.length / 2) * offset) + "px";
     div.style.top = y + "px";
 
-    const leftHalf = document.createElement("div");
-    leftHalf.className = "half";
-    leftHalf.appendChild(createPips(tile.a));
+    div.appendChild(createHalf(tile.a));
+    div.appendChild(createHalf(tile.b));
 
-    const rightHalf = document.createElement("div");
-    rightHalf.className = "half";
-    rightHalf.appendChild(createPips(tile.b));
-
-    div.appendChild(leftHalf);
-    div.appendChild(rightHalf);
     table.appendChild(div);
   });
 }
