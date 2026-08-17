@@ -9,6 +9,12 @@
       color:#fff;
       font-family:Arial, sans-serif;
       text-align:center;
+      margin:0;
+      padding:0;
+    }
+
+    h1 {
+      margin-top:20px;
     }
 
     #table {
@@ -79,7 +85,10 @@
       position:absolute;
     }
 
-    #hand { margin-top:20px; }
+    #hand {
+      margin-top:20px;
+      min-height:60px;
+    }
 
     .hand-tile {
       display:inline-block;
@@ -90,18 +99,31 @@
       border-radius:4px;
       cursor:pointer;
       border:1px solid #000;
+      font-weight:bold;
     }
 
     button {
       margin:5px;
       padding:8px 14px;
       cursor:pointer;
+      border-radius:4px;
+      border:none;
+      background:#444;
+      color:#fff;
+      font-weight:bold;
     }
 
-    #scoreboard { margin-top:20px; }
+    #scoreboard {
+      margin-top:20px;
+    }
+
+    #status {
+      display:inline-block;
+      margin-left:10px;
+      font-weight:bold;
+    }
   </style>
 </head>
-
 <body>
   <h1>Dominican Dominoes – Realistic Edition</h1>
   <p>Los Panas (P1 & P3) vs Los Vecinos (P2 & P4)</p>
@@ -254,17 +276,20 @@ function renderChain() {
 function renderHand() {
   const handDiv = document.getElementById("hand");
 
-  // FIX: Always clear first
+  // Always clear first to avoid leftover tiles
   handDiv.innerHTML = "";
 
   if (gameOver) return;
 
+  // Only show Player 1's hand
   if (currentPlayer !== 0) {
     handDiv.textContent = "Waiting for other players...";
     return;
   }
 
-  handDiv.innerHTML = "<h3>Your Tiles</h3>";
+  const title = document.createElement("h3");
+  title.textContent = "Your Tiles";
+  handDiv.appendChild(title);
 
   hands[0].forEach((tile, idx) => {
     const span = document.createElement("span");
